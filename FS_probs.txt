@@ -1,0 +1,2596 @@
+DAY 1
+
+/*
+Ramesh and Suresh are best friends. They decided to play a word game.
+ The game rules are as follows:
+ 	- The game board shows a word W consist of two characters only A and B.
+	- You are allowed to replace a pair of neighbour letters AA with BB in W.
+ 	- Finally, The one who failed to replace the letters will lose the game.
+ Your task is to find all the possible ways of W, after one valid replacement. 
+ You have to perform the replacement of the pair from left to right in the word.
+ and print the result in the same order of replacement.
+   
+  
+Input Format:
+-------------
+ A string W, word.
+
+ Output Format:
+ --------------
+ Print the list of possible replacements of W.
+  
+Sample Input-1:
+---------------
+ AAABAA
+
+Sample Output-1:
+----------------
+[BBABAA, ABBBAA, AAABBB]
+  
+Sample Input-2:
+---------------
+AAAAA
+
+Sample Output-2:
+----------------
+[BBAAA, ABBAA, AABBA, AAABB] 
+
+*/
+
+import java.util.*;
+class a{
+    public static void main(String args[]){
+        Scanner sc=new Scanner(System.in);
+        String ele=sc.next();
+        StringBuilder e=new StringBuilder(ele);
+        ArrayList<String>lis=new ArrayList<String>();
+        for(int i=0;i<e.length()-1;i++){
+            if(e.charAt(i)=='A' && e.charAt(i+1)=='A'){
+                StringBuilder t=new StringBuilder(ele);
+                lis.add(t.replace(i,i+2,"BB").toString());
+            }
+        }
+        for(int i=0;i<lis.size();i++){
+            System.out.print(lis.get(i)+" ");
+        }
+    }
+}
+
+nikhil::
+
+w = input()
+l = []
+for i in range(1,len(w)):
+    if w[i]=="A" and w[i-1]=="A":
+        ans = w[:i-1]+"BB"+w[i+1:]
+        l.append(ans)
+print(l)
+
+
+-----------------------------------
+
+
+2)
+
+/*
+You are given a list of N integers List[], list contains both +ve and -ve integers.
+Your task is to findout, the Highest Product possible,
+Where the product is the product of all the elements of contiguous sublist sList[],
+and sub list should conatin atleast 1 integer.
+
+Input Format:
+-------------
+Line-1: An integer N.
+Line-2: N space separated integers, List[].
+
+Output Format:
+--------------
+Print an integer output, the highest product.
+
+Sample Input-1:
+---------------
+4
+2 3 -2 4
+
+Sample Output-1:
+----------------
+6
+
+Explanation:
+------------
+Product of contiguous sub list [2,3].
+
+
+Sample Input-2:
+---------------
+3
+-2 0 -3
+
+Sample Output-2:
+----------------
+0
+
+Explanation:
+------------
+Product of sub list [0], where [-2,-3] is not a contiguous sublist
+
+*/
+
+nikhil::
+
+import java.util.*;
+class a{
+    static int dp[];
+    public static void main(String[] args){
+        Scanner sc=new Scanner(System.in);
+        int n=sc.nextInt();
+        int[] arr=new int[n];
+        dp=new int[n];
+        Arrays.fill(dp,Integer.MIN_VALUE);
+        for(int i=0;i<n;i++){
+            arr[i]=sc.nextInt();
+        }
+        System.out.println(find(arr,n,0));
+    }
+    public static int find(int[] arr,int n,int i){
+        if(i>=n){
+            return 0;
+        }
+        int prod=1;
+        int max=Integer.MIN_VALUE;
+        for(int k=i;k<n;k++){
+            prod=prod*arr[k];
+            max=Math.max(prod,max);
+        }
+        dp[n-1]=Math.max(max,find(arr,n,i+1));
+        return dp[n-1];
+        
+        
+    }
+}
+
+dp::
+
+n = int(input())
+l = list(map(int,input().split()))[:n]
+
+def findMax(l,n):
+    if len(l)==0:
+        return 0
+    if len(l)==1:
+        return l
+    max1 = []
+    min1 = []
+    max1.append(l[0])
+    min1.append(l[0])
+    for i in range(1,n):
+        max1.append(max(max(max1[i-1]*l[i],min1[i-1]*l[i]),l[i]))
+        min1.append(min(min(max1[i-1]*l[i],min1[i-1]*l[i]),l[i]))
+    return max(max1)
+ans = findMax(l,n)
+print(ans)
+        
+
+
+-----------------------------------
+
+
+3)DSU 
+
+/*
+There are P people in a Village, some of the people are relatives, others are not.
+Their relationship is transitive in nature. 
+
+For example, 
+ if A is a direct relative of B, and B is a direct relative of C, 
+then A is an indirect relative of C. And we define a Relation Chain is a group 
+of people who are direct or indirect relatives.
+ 
+ Given a P*P matrix R representing the relationship between people in the village. 
+ If R[i][j] = 1, then the i and j persons are direct relatives with each other, 
+ otherwise not. 
+
+Your task is to findout the total number of Relation Chains among all the people.
+
+Input Format:
+-------------
+Line-1 : An integer P, number of people
+Next P lines : P space separated integers.
+
+Output Format:
+--------------
+Print an integer, the total number of Relation Chains
+
+
+Sample Input-1:
+---------------
+3
+1 1 0
+1 1 0
+0 0 1
+
+Sample Output-1:
+----------------
+ 2
+
+ Explanation:
+ ------------
+ The 0-th and 1-st people are direct relatives, so they are in a relation chain.
+ The 2-nd person himself is in a relation chain. So return 2.
+
+Sample Input-2:
+---------------
+3
+ 1 1 0
+ 1 1 1
+ 0 1 1
+ 
+Sample Output-2:
+----------------
+ 1
+
+Explanation:
+------------
+The 0-th and 1-st people are direct relatives, 1-st and 2-nd people are direct 
+relatives. So, the 0-th and 2-nd people are indirect relatives.
+All of them in the same relative chain. So return 1.
+
+*/
+
+
+import java.util.*;
+public class a{
+    public static int find(int i,int p[]){
+        if(p[i]==i){
+            return i;
+        }
+        return find(p[i],p);
+    }
+    public static void union(int i,int j,int p[]){
+        if(i<j){
+            p[j]=i;
+        }
+        else{
+            p[i]=j;
+        }
+    }
+    public static void main(String args[]){
+        Scanner sc=new Scanner(System.in);
+        int n=sc.nextInt();
+        // arr=new int[n][n];
+        int par[]=new int[n];
+        for(int i=0;i<n;i++){
+            par[i]=i;
+        }
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                int t=sc.nextInt();
+                if(t==1){
+                    int t1=find(i,par);
+                    int t2=find(j,par);
+                    if(t1!=t2){
+                        union(t1,t2,par);
+                    }
+                }
+            }
+        }
+        int c=0;
+        for(int i=0;i<n;i++){
+            if(par[i]==i){
+                c++;
+            }
+        }
+        System.out.println(c);
+    }
+}
+
+
+dp::
+
+import java.util.*;
+
+class ED1P3{
+	/*			UNION FIND			*/
+    /*static int n;
+    static int[] parent;
+    static int find_parent(int v){
+        if(parent[v]==v)
+            return v;
+        return parent[v] = find_parent(parent[v]);
+    }
+    
+    static void union(int a,int b){
+        a = find_parent(a);
+        b = find_parent(b);
+        if(a!=b)
+            parent[b] = a;
+    }
+    
+    public static void main(String[] args){
+        Scanner sc = new Scanner(System.in);
+        n = sc.nextInt();
+        parent = new int[n];
+        for(int i=0;i<n;i++){
+            parent[i] = i;
+        }
+        
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                int x = sc.nextInt();
+                if(x==1)
+                    union(i,j);
+            }
+        }
+        int count = 0;
+        for(int i=0;i<n;i++){
+            int x = find_parent(i);
+            if(parent[i]==i)
+                count++;
+        }
+        System.out.print(count);
+    }*/
+	
+	
+	/*			DFS APPROACH 		*/
+    static boolean visited[];
+    static int[][] adjacency;
+    static int n;
+    static void DFS(int i){
+        if(visited[i]==true)
+            return;
+        else{
+            visited[i] = true;
+            for(int j=0;j<n;j++){
+                if(adjacency[i][j]==1){
+                    DFS(j);
+                }
+            }
+        }
+    }
+    public static void main(String[] args){
+        Scanner sc = new Scanner(System.in);
+        n = sc.nextInt();
+        adjacency = new int[n][n];
+        visited = new boolean[n];
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                adjacency[i][j] = sc.nextInt();    
+            }
+        }
+        int count=0;
+        for(int i=0;i<n;i++){
+            if(visited[i]==false){
+                DFS(i);
+                count++;
+            }
+        }
+        System.out.print(count);
+    }
+}
+
+
+
+--------------------------
+
+4)
+
+In a Marketing Agency, each agent will mentor either two sub-agents,
+or zero agents. Now, based on ranks given to sub-agents, the mentor agent 
+will be ranked with the top rank among two sub-agents. 
+
+The ranks are in the range [1,20], More than one agent can have same rank.
+
+At the end, all mentor agents and sub agents, will be treated as agents only.
+
+You are given the entire ranking picture as a tree.
+Your task is to find out second top agent in the Marketing agency.
+If no such agent exist, return -2.
+
+Implement the class Solution:
+   1. public int findSecondTopAgent(BinaryTreeNode root): returns an integer.
+
+NOTE:
+	- In the tree '-1', indicates empty(null).
+
+Input Format:
+-------------
+A single line of space separated integers, ranks of each individual.
+
+Output Format:
+--------------
+Print an integer, second top agent based on rank.
+
+
+Sample Input-1:
+---------------
+2 5 2 -1 -1 2 4
+
+Sample Output-1:
+----------------
+4
+
+
+Sample Input-2:
+---------------
+3 3 3 3 3
+
+Sample Output-2:
+----------------
+-2
+
+::For Tree structure refer to Hint::
+
+
+dup:::
+
+
+import java.util.*;
+/*
+class BinaryTreeNode{
+	public int data; 
+	public BinaryTreeNode left, right; 
+	public BinaryTreeNode(int data){
+		this.data = data; 
+		left = null; 
+		right = null; 
+	}
+}
+*/
+class Solution {
+    
+    HashSet<Integer> s;
+    public int findSecondTopAgent(BinaryTreeNode root) {
+        s = new HashSet<Integer>();
+        inorder(root);
+        long r = Long.MAX_VALUE;
+        int min = root.data;
+        for(int e :s)
+            if(min < e && e < r )
+                r = e;
+        if(r<Long.MAX_VALUE){
+            return ((int)r);
+        }
+        return -2;
+        // return r < Long.MAX_VALUE ? (int) r :-2;
+    }
+    public void inorder(BinaryTreeNode root)
+    {
+        if(root == null)
+            return;
+        
+        inorder(root.left);
+        s.add(root.data);
+        inorder(root.right);
+    }
+}
+
+===================================================
+
+
+DAY 2
+
+
+1)
+
+/*
+Arjun is playing a word game in his tab. When he start the game , It displays a
+word and he has to check for any two adjacent characters which are same.If found 
+he has to select those two characters by tapping, so that both characters will
+be deleted from the word and the word size shrinks by 2. This process to be 
+repeated until the word has no two adjacent characters are same.
+You task is to help Arjun to perform the above task and Return the final word
+obtained.
+
+Input Format:
+-------------
+Line-1: A string represents the word.
+
+Output Format:
+--------------
+Return a string or empty string.
+
+Constraints:
+------------   
+    1 <= word.length <= 10^5   
+    word consists only lower case letters.
+
+Sample Input-1:
+---------------
+pqqprs
+
+Sample Output-1:
+----------------
+rs
+
+Explanation:
+-------------
+Initially , Delete two 'q's then the word will be 'pprs'. Now Delete two 'p's 
+then the word will be rs.
+
+Sample Input-2:
+---------------
+pqqqprrs
+
+Sample Output-2:
+----------------
+pqps
+
+Explanation:
+-------------
+Initially , Delete two 'q's then the word will be 'pqprrs'. Now Delete two 'r's
+then the word will be pqps.
+
+
+*/
+
+
+// import java.util.*;
+// class a{
+//     public static StringBuilder eliminate(StringBuilder s){
+//         int i=0;
+//         while(i<s.length()-1){
+//             if(s.charAt(i)==s.charAt(i+1)){
+//                 s.]delete(i,i+2);
+//                 i=0;
+//             }
+//             else{
+//                 i++;
+//             }
+//         }
+//         return s;
+//     }
+//     public static void main(String args[]){
+//         Scanner sc=new Scanner(System.in);
+//         StringBuilder s=new StringBuilder(sc.next());
+//         System.out.println(eliminate(s));
+//     }
+// }
+***********USING STACK*********************
+import java.util.*;
+class a{
+    public static StringBuilder eliminate(StringBuilder s){
+        Stack<Character>stack=new Stack<Character>();
+        for(int i=0;i<s.length();i++){
+            char t=s.charAt(i);
+            if(stack.empty() || stack.peek()!=t){
+                stack.push(t);
+            }
+            else{
+                stack.pop();
+            }
+        }
+        StringBuilder temp=new StringBuilder();
+        while(!stack.empty()){
+            temp.append(stack.pop());
+        }
+        return temp.reverse();
+    }
+    public static void main(String args[]){
+        Scanner sc=new Scanner(System.in);
+        StringBuilder s=new StringBuilder(sc.next());
+        System.out.println(eliminate(s));
+    }
+}
+
+
+---------------------------
+
+2)USING DSU 
+*****************GUD PROB*************************
+
+/*
+There are N rooms in a row, and all the rooms are locked initially.
+You will be provided the master key. You can use the master key only once, and
+you can unlock any one room and find a key in it of some other room. 
+You have to repeat this process until you can find the keys of the locked rooms. 
+You have to stop this process once you find the key of a room 
+which is already unlocked.
+
+You are given an array of keys[], where i-th room contains the key of key[i]-th
+room and values of keys[] are range from [0..N-1] without duplicates. Your task 
+is to find the maximum number of rooms can be unlocked including the first room.
+
+Input Format:
+-------------
+Line-1: An integer N, number of rooms.
+Line-2: N space separated integers, keys of rooms.
+
+Output Format:
+--------------
+Print an integer result.
+ 
+Sample Input-1:
+---------------
+8
+7 4 6 2 1 0 3 5
+
+Sample Output-1:
+----------------
+3
+
+Explanation:
+-----------
+keys[0] = 7, keys[1] = 4, keys[2] = 6, keys[3] = 2, keys[4] = 1, keys[5] = 0, 
+keys[6] = 3, keys[7]=5.
+
+You can start with Room-0 using the master key, you can open the following rooms:
+  key[0]=7 =>  key[7]=5  =>  key[5]=0
+          or
+  key[2]=6 =>  key[6]=3  =>  key[3]=2
+
+You can unlock maximum 3 rooms.
+
+Sample Input-2:
+---------------
+ 6
+ 3 2 4 0 5 1
+
+ Sample Output-2:
+ ----------------
+ 4
+ 
+Sample Input-3:
+---------------
+5
+0 1 2 3 4
+
+ Sample Output-3:
+----------------
+1
+*/
+
+// import java.util.*;
+// class a{
+//     static int n,max;
+//     static int arr[];
+//     static int find_count(int i){
+//         ArrayList<Integer>li=new ArrayList<Integer>();
+//         li.add(i);
+//         int c=1;
+//         while(true){
+//             if(li.contains(arr[i])){
+//                 break;
+//             }
+//             else{
+//                 i=arr[i];
+//                 c++;
+//             }
+//         }
+//         return c;
+//     }
+//     public static void main(String args[]){
+//         Scanner sc=new Scanner(System.in);
+//         n=sc.nextInt();
+//         arr=new int[n];
+//         for(int i=0;i<n;i++){
+//             arr[i]=sc.nextInt();
+//         }
+//         for(int i=0;i<n;i++){
+//             int t=find_count(i);
+//             if(t>max){
+//                 max=t;
+//             }
+//         }
+//         System.out.println(max);
+//     }
+// }
+import java.util.*;
+
+class a{
+    static int[] parent;
+    static int n;
+    //static int[] keys;
+    static int getP(int v){
+        if(parent[v]<0)
+            return v;
+        return parent[v] = getP(parent[v]);
+    }
+    static void union(int a,int b){
+        a = getP(a);
+        b = getP(b);
+        if(a!=b){
+            parent[a] += parent[b];
+            parent[b] = a;
+        }
+    }
+    public static void main(String[] args){
+        Scanner sc = new Scanner(System.in);
+        n = sc.nextInt();
+        
+        //set Parent as -1
+        parent = new int[n];
+        for(int i=0;i<n;i++)
+            parent[i] = -1;
+            
+            
+        for(int i=0;i<n;i++){
+            int x = sc.nextInt();
+            union(i,x);
+        }
+        
+        
+        int res = Integer.MAX_VALUE;
+        for(int i=0;i<n;i++){
+            if(parent[i]<res)
+                res = parent[i];
+        }
+        System.out.print(-1*res);
+    }
+}
+
+--------------------------------
+
+3)USING DP
+/*
+You are playing a game. There are N boxes placed in a row (0-indexed), 
+every box has some points. You need to play the game with the following rules:
+ - Initially your score is  '0' points.
+	- Suppose the box has p points in it.
+	  if p>0 you will gain p points, if p<0 you will loose p points.
+	- You are allowed to choose any number of consecutive boxes, atleast 1 box.
+   	
+You are given the points in the N boxes as points[]. 
+Your target is to maximize your score by droping atmost one box in the set of 
+consecutive boxes, and return the highest score possible. 
+
+Note : The score should be considered for atleast 1 box even after droping a box.
+ 
+Input Format:
+-------------
+Line-1: An integer N.
+Line-2: N space separated integers, points[].
+  
+Output Format:
+--------------
+An integer, print the highest score.
+    
+Sample Input-1:
+---------------
+9
+-3 1 -2 4 -2 2 3 -5 4
+ 
+Sample Output-1:
+----------------
+ 11
+   
+Explanation:
+------------
+By selecting consecutive boxes [4,-2,2,3,-5,4] and dropping -5 , has the highest
+score is 11.
+   
+ 
+Sample Input-2:
+---------------
+ 2
+ 1 -2
+  
+Sample Output-2:
+----------------
+1
+
+Explanation:
+------------
+By picking the box is [1] has the highest score is 1.
+
+*/
+
+
+dup ans::
+
+
+// import java.util.*;
+// class Box{
+//     boolean isCalculated;
+//     int value;
+//     Box(){
+//         isCalculated = false;
+//         value = Integer.MIN_VALUE;
+//     }
+// }
+// class ED2P3{
+//     static int n,sum;
+//     static int[] arr;
+//     static Box[][] DP;
+//     static void DFS(int sum,int i,int j){
+//         if(i>j)
+//             return;
+//         if(DP[i][j].isCalculated)
+//             return;
+//         else{
+//             int x = sum;
+//             for(int a=i;a<=j;a++){
+//                 if(sum-arr[a] > x){
+//                     x = sum - arr[a];
+//                 }
+//             }
+//             DP[i][j].isCalculated = true;
+//             DP[i][j].value = x;
+//             DFS(sum-arr[i],i+1,j);
+//             DFS(sum-arr[j],i,j-1);
+//         }
+//     }
+//     public static void main(String[] args){
+//         Scanner sc = new Scanner(System.in);
+//         n = sc.nextInt();
+//         arr = new int[n];
+//         sum = 0;
+//         DP = new Box[n][n];
+//         for(int i=0;i<n;i++){
+//             arr[i] = sc.nextInt();
+//             sum += arr[i];
+//             for(int j=0;j<n;j++){
+//                 DP[i][j] = new Box();
+//             }
+//         }
+        
+//         DFS(sum,0,n-1);
+//         int res = Integer.MIN_VALUE;
+//         for(int i=0;i<n;i++){
+//             for(int j=0;j<n;j++){
+//                 if(res < DP[i][j].value)
+//                     res = DP[i][j].value;
+//             }
+//         }
+//         System.out.print(res);
+//     }
+// }
+
+
+my ans::
+
+
+import java.util.*;
+class a{
+    static int sum=0,n,max,arr[],memo[][];
+    static int calc(int s,int i,int j){
+        if(i>j){
+            return 0;
+        }
+        if(i==j){
+            return memo[i][j]=arr[i];
+        }
+        if(memo[i][j]==-1){
+            int mi=min_val(i,j);
+            memo[i][j]=Math.max(s-mi,Math.max(calc(s-arr[i],i+1,j),calc(s-arr[j],i,j-1)));
+        }
+        return memo[i][j];
+    }
+    static int min_val(int i,int j){
+        int m=Integer.MAX_VALUE;
+        for(int k=i;k<j+1;k++){
+            if(arr[k]<m){
+                m=arr[k];
+            }
+        }
+        return m;
+    }
+     public static void main(String args[]){
+        Scanner sc=new Scanner(System.in);
+        n=sc.nextInt();
+        arr=new int[n];
+        memo=new int[n][n];
+        for(int i=0;i<n;i++){
+            arr[i]=sc.nextInt();
+            sum+=arr[i];
+        }
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                memo[i][j]=-1;
+            }
+        }
+        max=calc(sum,0,n-1);
+        System.out.println(max);
+    }
+}
+
+====================================
+
+DAY 3
+
+1)NORMAL
+
+/*
+Kiran Rao purchased two boxes (Box1,Box2) of unique weights 
+of gold coins, where first box weights are subset of second box gold weights.
+
+ Now design a method for Gumadi Baleshwar Rao to find all the next largest weights 
+of Box1 gold coins in the corresponding locations of box2 , 
+if doesn’t exist return -1.
+
+The Next largest Weight is Weight ‘W’ in Box1 is the first largest weight 
+ to its right side weight in Box2.
+
+NOTE: Unique weights means, no two coins will have same weight.
+
+ Input Format:
+ -------------
+Line-1: space separated integers, weihts of gold coins in the first box.
+Line-2: space separated integers, weihts of gold coins in the second box.
+
+Output Format:
+--------------
+ Print a list of integers, next largest weights
+
+Sample Input-1:
+---------------
+ 4 3 2
+ 1 3 4 2
+
+Sample Output-1:
+ ----------------
+ [-1, 4, -1]
+
+
+ Sample Input-2:
+ ---------------
+5 6 3 4
+1 5 3 7 8 6 4 2
+
+ Sample Output-2:
+ ----------------
+[7, -1, 7, -1]
+
+*/
+
+import java.util.*;
+public class a{
+    public static void main(String arr[]){
+        Scanner sc=new Scanner(System.in);
+        ArrayList<Integer>s=new ArrayList<Integer>();
+        String[] a1 = (sc.nextLine()).split(" ");
+        String[] a2 = (sc.nextLine()).split(" ");
+        for(int i=0;i<a1.length;i++){
+            s.add(Integer.parseInt(a1[i]));
+        }
+        HashMap<Integer,Integer>h1=new HashMap<Integer,Integer>();
+        for(int i=0;i<a2.length;i++){
+            int t=Integer.parseInt(a2[i]);
+            h1.put(t,-1);
+            for(int k:h1.keySet()){
+                if(t>k && h1.get(k)==-1){
+                    h1.put(k,t);
+                }
+            }
+        }
+        for(int i=0;i<s.size();i++){
+            System.out.println(h1.get(s.get(i))+" ");
+        }
+    }
+}
+// import java.util.*;
+
+// class a{
+//     public static void main(String[] args){
+//         Scanner sc = new Scanner(System.in);
+//         String[] a1 = (sc.nextLine()).split(" ");
+//         String[] a2 = (sc.nextLine()).split(" ");
+//         HashMap<Integer,Integer> map = new HashMap<Integer,Integer>();
+        
+//         for(int i=0;i<a2.length;i++){
+//             int x = Integer.parseInt(a2[i]);
+//             for(int j = i+1;j<a2.length;j++){
+//                 int y = Integer.parseInt(a2[j]);
+//                 if(y>x){
+//                     map.put(x,y);
+//                     break;
+//                 }    
+//             }
+//             if(map.get(x)==null)
+//                 map.put(x,-1);
+//         }
+        
+//         for(int i=0;i<a1.length;i++){
+//             int x = Integer.parseInt(a1[i]);
+//             System.out.print(map.get(x)+" ");
+//         }
+//     }
+// }
+
+---------------------
+
+2)NORMAL
+
+ /*
+The Valid shortcuts of a string "abcd", are as follows:
+abcd, abcd, a1cd, ab1d, abc1, 2cd, a2d, ab2, 1b1d, 1bc1,a1c1, 1b2, 2c1, 3d,a3,4
+
+You are given a string S and shortcut string  SC, 
+Your task is to find out whether the string matches with the given shortcut or not.
+if matched print true, else false.
+
+Note:
+String S contains only lowercase letters and String SC contains only lowercase
+letters and digits.
+
+Input Format:
+-------------
+Two space separated Strings S and SC
+
+Output Format:
+--------------
+Print a boolean value
+
+
+Sample Input-1:
+---------------
+internationalization i12iz4n
+
+Sample Output-1:
+----------------
+true
+
+Sample Input-2:
+---------------
+apple a2e
+
+Sample Output-2:
+----------------
+false
+*/
+
+
+import java.util.*;
+class a{
+    public static boolean compare(String s1,String s2){
+        int i=0;
+        int v=0;
+        int j=0;
+        while(j<s2.length()){
+            char c=s2.charAt(j);
+            if(c-'0' < 10 && c-'0' >= 0){
+                v=v*10+(int)(c-'0');
+                System.out.println("num "+c+" "+v);
+            }
+            else{
+                i+=v;
+                if(i>=s1.length() || s1.charAt(i++)!=c){
+                    return false;
+                }
+                v=0;
+            }
+            j++;
+        }
+        return true;
+    }
+    public static void main(String args[]){
+        Scanner sc=new Scanner(System.in);
+        String S=sc.next();
+        String SC=sc.next();
+        System.out.println(compare(S,SC));
+    }
+}
+
+-------------------------------
+
+
+3)NORMAL
+
+
+You are given a bunch of sticks with diffrent lengths.
+All the even length sticks should be arranged to appear first in the bunch and 
+all the odd length sticks should be arranged to appear first in the bunch.
+
+Print the length of the sticks, after arranging them according to above conditions. 
+
+Input Format:
+-------------
+Line-1: An integer N, number of sticks in the bunch
+Line-2: N space separated integers, lengths of the sticks.
+
+Output Format:
+--------------
+Print the list of length of the sticks after arrangements accordingly.
+
+
+Sample Input-1:
+---------------
+4
+1 4 3 2
+
+Sample Output-1:
+----------------
+[4, 2, 1, 3]
+
+
+Sample Input-2:
+---------------
+8
+10 13 1 6 9 12 9 10
+
+Sample Output-2:
+----------------
+[10, 6, 12, 10, 13, 1, 9, 9]
+
+import java.util.*;
+class a{
+    public static void main(String ars[]){
+        Scanner sc=new Scanner(System.in);
+        int n=sc.nextInt();
+        int ev=0;
+        int od=n-1;
+        int arr[]=new int[n];
+        for(int i=0;i<n;i++){
+            int t=sc.nextInt();
+            if(t%2==0){
+                arr[ev++]=t;
+            }
+            else{
+                arr[od--]=t;
+            }
+        }
+        for(int i=0;i<ev;i++){
+            System.out.println(arr[i]+" ");
+        }
+        for(int i=n-1;i>od;i--){
+            System.out.println(arr[i]+" ");
+        }
+    }
+}
+
+import java.util.*;
+
+class ED3P3{
+    public static void main(String[] args){
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        int[] arr = new int[n];
+        for(int i=0;i<n;i++)
+            arr[i] = sc.nextInt();
+        
+        int ptr = 0;
+        int k = 0;
+        while(k<n){
+            if(arr[k]%2==0){
+                int x = arr[k];
+                int b = k;
+                while(b>ptr){
+                    arr[b] = arr[b-1];
+                    b--;
+                }
+                arr[ptr] = x;
+                ptr++;
+            }
+            k++;
+        }
+        for(int i=0;i<n;i++){
+            System.out.print(arr[i]+" ");
+        }
+        
+        
+    }
+}
+
+---------------
+
+4)NORMAL
+
+Given a board of size n*n, filled with numbers.
+
+Your task is to find the total sum of the the diagonal-1 numbers and diagonal-2 numbers in the board.
+consider the intersection value of the two diagonals(if any) only once in total sum.
+
+Input Format:
+-------------
+Line-1 -> An integer N, size of square board.
+Next N lines -> N space separated integers 
+
+Output Format:
+--------------
+Print the diagonal sum.
+
+
+Sample Input-1:
+---------------
+3
+1 2 3
+4 5 6
+7 8 9
+
+Sample Output-1:
+----------------
+25
+
+Explanation: diagonal-1 + diagonal-2 (exclude intersection-5) = (1+5+9) + (3+7) = 25
+
+Sample Input-2:
+---------------
+4
+1 2 3 4
+1 2 3 4
+1 2 3 4
+1 2 3 4
+
+Sample Output-2:
+----------------
+20
+
+Explanation: diagonal-1 + diagonal-2 (exclude intersection) = (1+2+3+4) + (4+3+2+1) = 20
+
+
+import java.util.*;
+class a{
+    public static void  main(String args[]){
+        Scanner sc=new Scanner(System.in);
+        int n=sc.nextInt();
+        int l=0;
+        int e=n-1;
+        int sum=0;
+        int v=0;
+        boolean f_l=true,f_e=true;
+        // int arr[][]=new int[n][n];
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                int t=sc.nextInt();
+                if((f_l && j==l)){
+                    sum+=t;
+                    f_l=false;
+                    l++;
+                }
+                if((f_e && j==e)){
+                    sum+=t;
+                    f_e=false;
+                    e--;
+                }
+                if(i==j && j==n/2){
+                    v=t;
+                }
+                // arr[i][j]=t;
+            }
+            f_l=true;
+            f_e=true;
+        }
+        if(n%2!=0){
+            // sum-=arr[n/2][n/2];
+            sum-=v;
+        }
+        System.out.println(sum);
+    }
+}
+
+import java.util.*;
+
+class ED3P4{
+    public static void main(String[] args){
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        int[][] arr = new int[n][n];
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                arr[i][j] = sc.nextInt();
+            }
+        }
+        
+        int sum = 0;
+        for(int i=0;i<n;i++){
+            int x = n - i - 1;
+            sum += arr[i][i];
+            if(x==i)
+                continue;
+            else 
+                sum += arr[x][i];
+        }
+        
+        System.out.print(sum);
+    }
+}
+
+=======================================
+
+
+DAY 4
+
+1)DFS
+
+/*
+There are some Warships, approaching the borders of India and curretly
+situated in Bay of Bengal. One of the secret agent sent the picture of the warships.
+ 
+The picture size is M * N, and he has marked each 1*1 part of the picture either 
+with the Warships as 'W' or an empty place as 'E'. The Indian Navy want to destroy
+those Warships using Torpedos, with one Torpedo you can destroy one Warship.
+
+ The Warships are mentioned either horizontally or vertically in the picture. 
+ And it is also mentioned that there are no adjacent warships.
+
+Your target is find the number of Torpedos required to destroy all the Warships.
+
+Input Format:
+-------------
+ Line-1: Two space separated integers M and N.
+ Next M lines: N space separated characters, either W or E
+
+Output Format:
+--------------
+Print an integer, number of torpedos required.
+  
+ Sample Input-1:
+ ---------------
+ 2 3
+ W E E
+ W E E
+
+Sample Output-1:
+ ----------------
+ 1
+
+
+ Sample Input-2:
+---------------
+ 4 5
+ W E E W W
+ W E W E E
+ W E W E W
+ W E W E W
+ 
+Sample Output-2:
+----------------
+ 4
+
+*/
+
+import java.util.*;
+class Test{
+    static char lis[][];
+    static int c=0,n,m;
+    static void dfs(int a,int b){
+        if(a>n-1 || b>m-1 || a<0 || b<0 || lis[a][b]=='E'){
+            return;
+        }
+        lis[a][b]='E';
+        dfs(a+1,b);
+        dfs(a,b+1);
+    }
+    public static void main(String args[]){
+        Scanner sc=new Scanner(System.in);
+        n=sc.nextInt();
+        m=sc.nextInt();
+        lis = new char[n][m];
+        for(int i=0;i<n;i++){
+            for(int j=0;j<m;j++){
+                lis[i][j]=sc.next().charAt(0);
+            }
+        }
+        for(int i=0;i<n;i++){
+            for(int j=0;j<m;j++){
+                if(lis[i][j]=='W'){
+                    c++;
+                    dfs(i,j);
+                }
+            }
+        }
+        System.out.println(c);
+    }
+}
+
+------------------------------
+
+2)DFS
+
+Mr Sudhakar is given a checkerboard of size 400*400, where the indices starts 
+from (-200,-200) and ends at (199,199). In one step, he can move the box from 
+position (p,q) to one of the following positions in L shape like as follows: 
+	- (p-2, q-1), (p-2, q+1), (p+2, q-1), (p+2, q+1)
+	- (p-1, q+2), (p+1, q+2), (p-1, q-2), (p+1, q-2)
+
+Initially the box is at (0,0) position, and need to move the box to position (m,n).
+You will be given two integers m and n indicates the position(m,n).
+
+Now your task is to help by Mr Sudhakar to find the minimum number of steps 
+required to move the box from (0,0) to (m,n).
+
+Note: It is allowed to move out of the board also.
+
+Input Format:
+-----------------
+Two space separated integers, m and n, position.
+
+Output Format:
+------------------
+Print an integer, minimum number of steps to reach (m,n).
+
+
+Sample Input-1:
+---------------
+2 4
+
+Sample Output-1:
+----------------
+2
+
+Explanation:
+-------------
+Initially, you are at (0,0) position, you can reach (2,4) as follows:
+(0,0) -> (1, 2) -> (2, 4) 
+
+
+Sample Input-2:
+---------------
+4 7
+
+Sample Output-2:
+----------------
+5
+
+Explanation:
+------------
+Initially, you are at (0,0) position, you can reach (4,7) as follows:
+(0,0) -> (1, 2) -> (2, 4) -> (1, 6) -> (3, 5) -> (4, 7)
+
+
+import java.util.*;
+public class a{
+    static HashMap<String,Integer>mem=new HashMap<String,Integer>();
+    public static int dfs(int x,int y){
+        String t=x+"_"+y;
+        if(mem.containsKey(t)){
+            return mem.get(t);
+        }
+        if(x+y==0){
+            return 0;
+        }
+        else if(x+y==2){
+            return 2;
+        }
+        else{
+            int val=Math.min(dfs(Math.abs(x-1),Math.abs(y-2)),dfs(Math.abs(x-2),Math.abs(y-1)))+1;
+            mem.put(t,val);
+            return val;
+        }
+    }
+    public static void main(String args[]){
+        Scanner sc=new Scanner(System.in);
+        int x=sc.nextInt();
+        int y=sc.nextInt();
+        System.out.println(dfs(Math.abs(x),Math.abs(y)));
+    }
+}
+
+------------------------
+
+3)MULTI THREADING
+
+/*
+There are a group of kids playing a game in a circle.This game is to check their
+Arithmetic division skills.We will start the game by selecting a kid and he has 
+to say 1 to start the game and the next kid turn arrives he has to say next 
+number but with the following rules.
+   - if number is divisible by 3 then the answer is "Hi".
+   - if number is divisible by 5 then the answer is "Hello".
+   - if number is divisible by both 3 and 5 then the answer is "HiHello".
+   - else the answer is the number itself.
+
+ Given a number N , return a string array result[] (1-indexed),which consists the 
+ answers from kid-1 to kid-N.
+
+Input Format:
+-------------
+Line-1: An integer N.
+
+Output Format:
+--------------
+Print a string array[].
+
+Constraints:
+• 1 <= n <= 10^4
+ 
+Sample Input-1:
+---------------
+4
+
+Sample Output-1:
+----------------
+1 2 Hi 4 
+
+
+Sample Input-2:
+---------------
+15
+
+Sample Output-2:
+----------------
+1 2 Hi 4 Hello Hi 7 8 Hi Hello 11 Hi 13 14 HiHello 
+ 
+
+
+*/
+
+
+my code::
+
+import java.util.*;
+public class a{
+    static int n,count=1;
+    public void f3_5(){
+        synchronized(this){
+            while(count<=n){
+                if(count%3==0 && count%5==0){
+                    System.out.print("HiHello ");
+                    count++;
+                    notifyAll();
+                }
+                else{
+                    try{
+                        wait();
+                    }
+                    catch(InterruptedException e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+    public void f5(){
+        synchronized(this){
+            while(count<=n){
+                if(count%3!=0 && count%5==0){
+                    System.out.print("Hello ");
+                    count++;
+                    notifyAll();
+                }
+                else{
+                    try{
+                        wait();
+                    }
+                    catch(InterruptedException e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+    public void f3(){
+        synchronized(this){
+            while(count<=n){
+                if(count%3==0 && count%5!=0){
+                    System.out.print("Hi ");
+                    count++;
+                    notifyAll();
+                }
+                else{
+                    try{
+                        wait();
+                    }
+                    catch(InterruptedException e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+    public void f(){
+        synchronized(this){
+            while(count<=n){
+                if(count%3!=0 && count%5!=0){
+                    System.out.print(count+" ");
+                    count++;
+                    notifyAll();
+                }
+                else{
+                    try{
+                        wait();
+                    }
+                    catch(InterruptedException e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+    public static void main(String arfs[]){
+        Scanner sc=new Scanner(System.in);
+        n=sc.nextInt();
+        a obj=new a();
+        Thread t1=new Thread(new Runnable(){
+            public void run(){
+                obj.f3_5();
+            }
+        });
+        Thread t2=new Thread(new Runnable(){
+            public void run(){
+                obj.f5(); 
+            }
+        });
+        Thread t3=new Thread(new Runnable(){
+            public void run(){
+                obj.f3();   
+            }
+        });
+        Thread t4=new Thread(new Runnable(){
+            public void run(){
+                 obj.f();
+            }
+        });
+        t1.start();
+        t2.start();
+        t3.start();
+        t4.start();
+    }
+}
+
+sir code:::
+
+import java.util.*;
+
+class Shared{
+    int i=1;
+    int n=0;
+    Shared(int n){
+        this.n=n;
+    }
+    public synchronized int get(){
+        if(i<=n){
+            return i;
+        }
+        else{
+            return -1;
+        }
+    }
+    public synchronized void increment(){
+        this.i++;
+    }
+}
+class number implements Runnable{
+    Shared s;
+    number(Shared obj){
+        s=obj;
+    }
+    @Override
+    public void run(){
+        synchronized(s){
+            while(s.get()!=-1){
+                if(s.get()%3!=0 &&s.get()%5!=0){
+                    System.out.println(s.get());
+                    s.increment();
+                    s.notifyAll();
+                }
+                else{
+                    try{
+                        s.wait();
+                    }
+                    catch(Exception e){
+                        System.out.println(e);
+                    }
+                }
+            }
+        }
+    }
+}
+
+class Hi implements Runnable{
+    Shared s;
+    Hi(Shared obj){
+        s=obj;
+    }
+    @Override
+    public void run(){
+        synchronized(s){
+            while(s.get()!=-1){
+                if(s.get()%3==0 &&s.get()%5!=0){
+                    System.out.println("Hi");
+                    s.increment();
+                    s.notifyAll();
+                }
+                else{
+                    try{
+                        s.wait();
+                    }
+                    catch(Exception e){
+                        System.out.println(e);
+                    }
+                }
+            }
+        }
+    }
+}
+
+class Hello implements Runnable{
+    Shared s;
+    Hello(Shared obj){
+        s=obj;
+    }
+    @Override
+    public void run(){
+        synchronized(s){
+            while(s.get()!=-1){
+                if(s.get()%3!=0 &&s.get()%5==0){
+                    System.out.println("Hello");
+                    s.increment();
+                    s.notifyAll();
+                }
+                else{
+                    try{
+                        s.wait();
+                    }
+                    catch(Exception e){
+                        System.out.println(e);
+                    }
+                }
+            }
+        }
+    }
+}
+
+class HiHello implements Runnable{
+    Shared s;
+    HiHello(Shared obj){
+        s=obj;
+    }
+    @Override
+    public void run(){
+        synchronized(s){
+            while(s.get()!=-1){
+                if(s.get()%3==0 &&s.get()%5==0){
+                    System.out.println("HiHello");
+                    s.increment();
+                    s.notifyAll();
+                }
+                else{
+                    try{
+                        s.wait();
+                    }
+                    catch(Exception e){
+                        System.out.println(e);
+                    }
+                }
+            }
+        }
+    }
+}
+
+class sol{
+    public static void main(String args[]){
+        Scanner sc=new Scanner(System.in);
+        int n=sc.nextInt();
+        Shared obj=new Shared(n);   
+        Thread t1=new Thread(new number(obj));
+        Thread t2=new Thread(new Hi(obj));
+        Thread t3=new Thread(new Hello(obj));
+        Thread t4=new Thread(new HiHello(obj));
+        
+        t1.start();
+        t2.start();
+        t3.start();
+        t4.start();
+        
+    }
+}
+
+=======================================
+
+
+DAY 5
+
+1)THREADING
+
+Suppose you are given the following code:
+
+class KmitNgit {
+  public void kmit() {
+    for (int i = 0; i < n; i++) {
+      print("Kmit");
+    }
+  }
+
+  public void ngit() {
+    for (int i = 0; i < n; i++) {
+      print("Ngit");
+    }
+  }
+}
+
+The same instance of KmitNgit will be passed to two different threads. 
+Thread A will call kmit() while thread B will call ngit(). 
+Modify the given program to output "KmitNgit" n times.
+
+Input Format:
+-------------
+An integer N.
+
+Output Format:
+--------------
+Print KmitNgit for N times using threads.
+
+
+Sample Input:
+-------------
+1
+Sample Output:
+--------------
+KmitNgit
+
+Explanation:
+------------
+There are two threads being fired asynchronously. 
+One of them calls kmit(), while the other calls ngit(). 
+"KmitNgit" is being output 1 time.
+
+
+Sample Input:
+-------------
+2
+
+Sample Output:
+--------------
+KmitNgitKmitNgit
+
+Explanation:
+------------
+"KmitNgit" is being output 2 times.
+
+
+MYCODE::
+
+import java.util.*;
+class lock{
+    boolean f;
+    int n;
+    lock(int n){
+        f=true;
+        this.n=n;
+    }
+    public void set(){
+        if(f){
+            f=false;
+        }
+        else{
+            f=true;
+        }
+        n--;
+    }
+    public int get(){
+        if(n>0){
+            return n;
+        }
+        else{
+            return 0;
+        }
+    }
+}
+class KMIT implements Runnable{
+    lock l;
+    KMIT(lock l){
+        this.l=l;
+    }
+    @Override
+    public void run(){
+        synchronized(l){
+            while(l.get()!=0){
+                if(l.f){
+                    System.out.print("Kmit");
+                    l.set();
+                    l.notifyAll();
+                }
+                else{
+                    try{
+                        l.wait();
+                    }
+                    catch(Exception e){
+                        System.out.println("Error");
+                    }
+                }   
+            }
+        }
+        
+    }
+}
+class NGIT implements Runnable{
+    lock l;
+    NGIT(lock l){
+        this.l=l;
+    }
+    @Override
+    public void run(){
+        synchronized(l){
+            while(l.get()!=0){
+                if(!l.f){
+                    System.out.print("Ngit");
+                    l.set();
+                    l.notifyAll();
+                }
+                else{
+                    try{
+                        l.wait();
+                    }
+                    catch(Exception e){
+                        System.out.println("Error");
+                    }
+                }   
+            }
+        }
+        
+    }
+}
+public class a{
+    static int n;
+    public static void main(String args[]){
+        Scanner sc=new Scanner(System.in);
+        n=(sc.nextInt())*2;
+        lock l=new lock(n);
+        Thread t1=new Thread(new KMIT(l));
+        Thread t2=new Thread(new NGIT(l));
+        t1.start();
+        t2.start();
+    }
+}
+
+
+rishi::
+
+import java.util.*;
+class share{
+    int n;
+    int i=1;
+    int flag=1;
+    share(int n){
+        this.n=n;
+    }
+    public synchronized int get(){
+        if(i<=n){
+            return flag;
+        }
+        else{
+            return -2;
+        }
+    }
+    public synchronized void inc(){
+        this.i++;
+    }
+    public synchronized void kmi(){
+        this.flag--;
+    }
+    public synchronized void ngi(){
+        this.flag++;
+    }
+    
+    
+}
+class kmit extends Thread{
+    share d;
+    kmit(share obj){
+        this.d=obj;
+    }
+    @Override
+    public void run(){
+        synchronized(d){
+            while(d.get()!=-2){
+                if(d.get()==1){
+                    System.out.print("Kmit");
+                    d.kmi();
+                    d.notifyAll();
+                }
+                else{
+                    try{
+                        d.wait();
+                    }
+                    catch(Exception e){
+                        System.out.print(e);
+                    }
+                }
+            }
+        
+        }
+        
+    }
+}
+class ngit extends Thread{
+    share d;
+    ngit(share obj){
+        this.d=obj;
+    }
+    @Override
+    public void run(){
+        synchronized(d){
+            while(d.get()!=-2){
+                if(d.get()==0){
+                    System.out.print("Ngit");
+                    d.ngi();
+                    d.inc();
+                    d.notifyAll();
+                    
+                }
+                else{
+                    try{
+                        d.wait();
+                    }
+                    catch(Exception e){
+                        System.out.print(e);
+                    }
+                }
+            }
+        
+        }
+        
+    }
+}
+class x{
+    public static void main(String []args){
+        Scanner sc=new Scanner(System.in);
+        int n=sc.nextInt();
+        share obj=new share(n);
+        Thread tk=new Thread(new kmit(obj));
+        Thread tn=new Thread(new ngit(obj));
+        tk.start();
+        tn.start();
+        
+    }
+}
+
+-------------------------------
+
+2)/*
+A Kid is arranging a structure using building blocks, 
+by placing individual building-block adjacent to each other.
+
+A building-block is a vertical alignment of blocks.
+	                            ___
+here one block each represents  as |___|.
+
+The following structure made up of using building blocks
+
+                          ___
+                      ___|___|    ___
+                     |___|___|_w_|___|___              ___
+                  ___|___|___|___|___|___| w   _w_  w |___| 
+              ___|___|___|___|___|___|___|_w__|___|_w_|___|____________
+    
+               0  1   3   4   2   3    2   0   1   0   2
+
+Once the structure is completed, kid pour water(w) on it.
+
+You are given a list of integers, heights of each building-block in a row.
+ Now your task How much amount of water can be stored by the structure.
+
+ Input Format:
+ -------------
+ Space separated integers, heights of the blocks in the structure. 
+
+Output Format:
+ --------------
+ Print an integer, 
+  
+Sample Input:
+-------------
+ 0 1 3 4 2 3 2 0 1 0 2
+    
+Sample Output:
+--------------
+6
+    
+Explanation:
+ -----------
+In the above structure,  6 units of water (w represents the water in the structure)
+can be stored.
+*/
+
+mycode::
+
+n=int(input())
+a=[int(i) for i in input().split()]
+lm=[]
+rm=[]
+m1=a[0]
+m2=a[len(a)-1]
+for i in range(len(a)):
+    if(m1<a[i]):
+        m1=a[i]
+    lm.append(int(m1))
+    if(m2<a[len(a)-i-1]):
+        m2=a[len(a)-i-1]
+    rm.append(int(m2))
+rm=rm[::-1]
+sum=0
+i=0
+while(i<len(a)):
+    m=min(lm[i],rm[i])
+    sum=sum+abs(m-int(a[i]))
+    i=i+1
+print(sum)
+
+    
+
+------------------
+
+3)
+/*
+Rahul works in a Water purifying plant.His job is to pack the water bottles of 
+different sizes in a box.He packed the water bottles in different boxes.Each box
+may have different number of bottles and the count is printed on the box.
+
+Rahul asked Suresh to send these bottles in a grid(0-indexed) where one box can
+be placed in one cell.
+grid[i][j] represents the count printed on the box placed on cell (i,j)
+
+Given a shift value 's' , Suresh has to shift the boxes 's' times in the grid.
+
+In one shift , he can move:
+   -grid[i][j] to grid[i][j+1]
+   -grid[i][q-1] to grid[i+1][0]
+   -grid[p-1][q-1] to grid[0][0].
+Return the 2D-grid after shifting.   
+
+Input Format:
+ -------------
+ Line -1: 3 space seperated integers p , q and s represents number of rows ,number of columns and number of shifts..
+ next p-Lines: q Space separated integers represents count printed on the box. 
+
+Output Format:
+ --------------
+ Print a 2D array, 
+  
+Sample Input -1:
+-------------
+3 3 2
+2 3 4
+5 6 7
+8 9 10
+    
+Sample Output -1:
+--------------
+9 10 2 
+3 4 5 
+6 7 8 
+    
+Explanation:
+ -----------
+As s=2, Every value is shifted forward 2 times.
+grid[0][0]=2 is shifted to grid[0][2], grid[0][1]=3 is shifted to grid[1][0] and so on...
+
+  
+Sample Input-2:
+-------------
+4 5 3
+1 2 3 4 5
+6 7 8 9 10
+11 12 13 14 15
+5 4 2 3 1
+    
+Sample Output-2:
+--------------
+2 3 1 1 2 
+3 4 5 6 7 
+8 9 10 11 12 
+13 14 15 5 4 
+    
+
+*/
+
+my code::
+
+a,b,c=input().split()
+a,b,c=int(a),int(b),int(c)
+l=[]
+for i in range(a):
+    t=input().split()
+    for j in range(b):
+        l.append(t[j])
+l_s=[]
+for i in range(len(l)-c,len(l)):
+    l_s.append(l[i])
+for i in range(0,len(l)-c):
+    l_s.append(l[i])
+f=0
+for i in range(a):
+    for j in range(b):
+        print(l_s[f],end=" ")
+        f=f+1
+    print()
+
+--------------
+
+4)
+
+/*
+						LEETCODE-> EVEN ODD TREE
+
+
+For X-Mas, santa claus is preparing a X-Mas Tree with set of Bulbs.
+The bulbs are of different voltages, and preparation of tree as follows:
+	- The bulbs are arranged in level-wise, levels are numbered from 0,1,2,3..
+	  so on.
+	- At level-0: There will be only one bulb as root bulb.,
+	- From next level onwards, we can attach atmost two bulbs to left side,
+	  and right side of every bulb in previous level.
+	- The empty attachements in a level are indicated with -1. 
+	(for example: look in hint)
+	
+Entire X-Mas tree has to be prepared with certian rules as follows:
+	- For every even level in the X-Mas Tree, all the bulbs should have
+	  odd voltages in strictly ascending order.
+	- For every odd level in the X-Mas Tree, all the bulbs should have
+	  even voltages in strictly descending order.
+	
+You will be given the X-Mas Tree root,
+Your task is to findout whether the X-Mas tree is prepared as per the rules
+or not.
+
+Implement the class Solution.
+1.public boolean isXmasTree(BinaryTreeNode root): returns a boolean value.
+
+
+Input Format:
+-------------
+A single line of space separated integers, voltages of the set of bulbs.
+
+Output Format:
+--------------
+Print a boolean value.
+
+
+
+Sample Input-1:
+---------------
+3 8 4 3 5 -1 7 
+
+Sample Output-1:
+----------------
+true
+
+
+Sample Input-2:
+---------------
+3 8 4 3 5 7 7 
+
+Sample Output-2:
+----------------
+false
+
+
+Sample Input-3:
+---------------
+1
+
+Sample Output-3:
+----------------
+true
+
+*/
+
+/*
+//TreeNode Structure for Your Reference..
+
+class BinaryTreeNode{
+	public int data; 
+	public BinaryTreeNode left, right; 
+	public BinaryTreeNode(int data){
+		this.data = data; 
+		left = null; 
+		right = null; 
+	}
+}
+
+*/
+import java.util.*;
+class Solution {
+    
+    public boolean isXmasTree(BinaryTreeNode root) {
+        // Implement Your Code here..
+        if(root==null)
+            return false;
+        Queue<BinaryTreeNode> q = new LinkedList<BinaryTreeNode>();
+        q.offer(root);
+        boolean even = false;
+        boolean odd = false;
+        if(root.data%2==0)
+            return false;
+        else{
+            odd = true;
+        }
+        while(!q.isEmpty()){
+            int size = q.size();
+            ArrayList<Integer> list = new ArrayList<Integer>();
+            for(int i=0;i<size;i++){
+                BinaryTreeNode node = q.poll();
+                if(even && node.data%2!=0)
+                    return false;
+                if(odd && node.data%2==0)
+                    return false;
+                list.add(node.data);
+                if(node.left!=null && (node.left).data!=-1)
+                    q.offer(node.left);
+                if(node.right!=null && (node.right).data!=-1)
+                    q.offer(node.right);
+            }
+            
+            if(even){
+                for(int i=0;i<list.size()-1;i++){
+                    if(list.get(i)<=list.get(i+1)){
+                        return false;
+                    }
+                }
+                even = false;
+                odd = true;
+            }
+            else{
+                for(int i=0;i<list.size()-1;i++){
+                    if(list.get(i)>=list.get(i+1)){
+                        return false;
+                    }
+                }
+                even = true;
+                odd = false;
+            }
+        }
+        return true;
+    }
+}
+
+
+===============================
+
+
+DAY 6
+
+1)LEVELORDER TRAVERSAL
+
+Mr Rakesh is interested to work on Data Structures.
+He has constructed a BinaryTree-BT.
+
+He asked his friend Anil to check whether BT is self mirror tree or not.
+Can you help Anil to find and return "true" if the given BT is a self mirror tree,
+otherwise return "false".
+
+Implement the class Solution:
+   1. public boolean isSelfMirrorTree(BinaryTreeNode root): returns a boolean value.
+  
+NOTE:
+	- In the tree '-1', indicates empty(null).
+   
+Input Format:
+-------------
+A single line of space separated integers, values at the treenode
+
+Output Format:
+--------------
+Print a boolean value.
+
+
+Sample Input-1:
+---------------
+2 1 1 2 3 3 2
+
+Sample Output-1:
+----------------
+true
+
+
+Sample Input-2:
+---------------
+2 1 1 -1 3 -1 3
+
+Sample Output-2:
+----------------
+false
+
+
+/*
+//TreeNode Structure for Your Reference..
+
+class BinaryTreeNode{
+	public int data; 
+	public BinaryTreeNode left, right; 
+	public BinaryTreeNode(int data){
+		this.data = data; 
+		left = null; 
+		right = null; 
+	}
+}
+
+*/
+import java.util.*;
+
+class Solution {
+    public boolean isSelfMirrorTree(BinaryTreeNode root) {
+        // Implement Your Code here..
+        if(root==null){
+            return true;
+        }
+        ArrayDeque<BinaryTreeNode>q=new ArrayDeque<BinaryTreeNode>();
+        String s="";
+        q.offerLast(root);
+        while(!q.isEmpty()){
+            int si=q.size();
+            for(int i=0;i<si;i++){
+                BinaryTreeNode fir=q.pollFirst();
+                s=s+(char)(fir.data);
+                if(fir.left!=null) q.offerLast(fir.left);
+                if(fir.right!=null) q.offerLast(fir.right);
+            }
+            int m=0;
+            int n=s.length()-1;
+            while(m<=n){
+                if(s.charAt(m)!=s.charAt(n)){
+                    return false;
+                }
+                m++;
+                n--;
+            }
+            s="";
+        }
+        return true;
+    }
+}
+
+
+--------------------------------
+
+2)level order traversal
+
+For X-Mas, santa claus is preparing a X-Mas Tree with set of Bulbs.
+The bulbs are of different voltages, and preparation of tree as follows:
+	- The bulbs are arranged in level-wise, levels are numbered from 0,1,2,3..
+	  so on.
+	- At level-0: There will be only one bulb as root bulb.,
+	- From next level onwards, we can attach atmost two bulbs to left side,
+	  and right side of every bulb in previous level.
+	- The empty attachements in each level are indicated with -1. 
+	(for example: look in hint)
+
+You will be given the root of the X-Mas Tree,
+Your task is to findout the bulb with highest voltage in each level.
+
+Implement the class Solution:
+1.public List<Integer> maxInEachRow(BinaryTreeNode root): returns the list of integers.
+
+
+Input Format:
+-------------
+A single line of space separated integers, voltages of the set of bulbs.
+
+Output Format:
+--------------
+Print the list of voltages.
+
+
+Sample Input-1:
+---------------
+2 4 3 6 4 -1 9
+
+Sample Output-1:
+----------------
+[2, 4, 9]
+
+
+Sample Input-2:
+---------------
+3 4 7 7 3 8 4 
+
+Sample Output-2:
+----------------
+[3, 7, 8]
+
+
+/*
+//TreeNode Structure for Your Reference..
+
+class BinaryTreeNode{
+	public int data; 
+	public BinaryTreeNode left, right; 
+	public BinaryTreeNode(int data){
+		this.data = data; 
+		left = null; 
+		right = null; 
+	}
+}
+
+*/
+import java.util.*;
+
+class Solution {
+    public List<Integer> maxInEachRow(BinaryTreeNode root) {
+        // Implement Your Code here..
+        ArrayDeque<BinaryTreeNode>q=new ArrayDeque<BinaryTreeNode>();
+        List<Integer>out=new ArrayList<Integer>();
+        if(root==null){
+            return out;
+        }
+        q.offerLast(root);
+        while(!q.isEmpty()){
+            int si=q.size();
+            int lm=Integer.MIN_VALUE;
+            for(int i=0;i<si;i++){
+                BinaryTreeNode fir=q.pollFirst();
+                int t=fir.data;
+                if(t>lm){
+                    lm=t;
+                }
+                if(fir.left!=null) q.offerLast(fir.left);
+                if(fir.right!=null) q.offerLast(fir.right);
+            }
+            out.add(lm);
+        }
+        return out;
+    }
+}
+
+--------------------------
+
+3)DYNAMIC programming
+
+Mr Rakesh is interested to work on Data Structures.
+He has constructed a BinaryTree-BT.
+
+He asked his friend Anil to check whether BT is self mirror tree or not.
+Can you help Anil to find and return "true" if the given BT is a self mirror tree,
+otherwise return "false".
+
+Implement the class Solution:
+   1. public boolean isSelfMirrorTree(BinaryTreeNode root): returns a boolean value.
+  
+NOTE:
+	- In the tree '-1', indicates empty(null).
+   
+Input Format:
+-------------
+A single line of space separated integers, values at the treenode
+
+Output Format:
+--------------
+Print a boolean value.
+
+
+Sample Input-1:
+---------------
+2 1 1 2 3 3 2
+
+Sample Output-1:
+----------------
+true
+
+
+Sample Input-2:
+---------------
+2 1 1 -1 3 -1 3
+
+Sample Output-2:
+----------------
+false
+
+import java.util.*;
+public class a{
+    static HashMap<Integer,Integer>h=new HashMap<Integer,Integer>();
+    static HashMap<Integer,Integer>h1=new HashMap<Integer,Integer>();
+    static int find(int i){
+        if(i<=0){
+                return 0;
+        }
+        // if(h.get(i)==null){
+        //     return find(i-1);
+        // }
+        // else{
+        //     if(h1.get(i)==null){
+        //         h1.put(i,Math.max(i*h.get(i)+find(i-2),i*h.get(i)+find(i-3)));
+        //         return h1.get(i);
+        //     }
+        //     return h1.get(i);
+        // }
+        else{
+            if(h1.get(i)==null){
+                h1.put(i,Math.max(i*h.getOrDefault(i,0)+find(i-2),find(i-1)));
+                return h1.get(i);
+            }
+            return h1.get(i);
+        }
+    }
+    public static void main(String args[]){
+        Scanner sc=new Scanner(System.in);
+        int n=sc.nextInt();
+        int lis[]=new int[n];
+        int m=0;
+        for(int i=0;i<n;i++){
+            lis[i]=sc.nextInt();
+            if(h.get(lis[i])==null){
+                h.put(lis[i],1);
+            }
+            else{
+                h.put(lis[i],h.get(lis[i])+1);
+            }
+            if(m<lis[i]){
+                m=lis[i];
+            }
+        }
+        // System.out.println(Math.max(find(m),find(m-1)));
+        System.out.println((find(m)));
+    }
+}
+
+=======================================
